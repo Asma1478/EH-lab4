@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+		<meta name="CHANGEFREQ" content="daily">
+		<meta name="PRIORITY" content="0.991525">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta name="robots" content="all">
+		<!-- User defined head content such as meta tags and encoding options -->
+		<title>Metasploit Exploit Creation, Step By Step | Security, buffer 
+overflow, exploits, Vulnerability, Metasploit, Tutorial | Enclave 
+Forensics</title>
+		<link rel="stylesheet" type="text/css" media="screen" href="e6fb7327cb615688f90fc07656a3880d-28_files/styles.css">
+		<link rel="stylesheet" type="text/css" media="print" href="e6fb7327cb615688f90fc07656a3880d-28_files/print.css">
+		<link rel="stylesheet" type="text/css" media="handheld" href="e6fb7327cb615688f90fc07656a3880d-28_files/handheld.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="e6fb7327cb615688f90fc07656a3880d-28_files/dark.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="e6fb7327cb615688f90fc07656a3880d-28_files/rounded.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="e6fb7327cb615688f90fc07656a3880d-28_files/modern.css">
+		<!-- Style variations - these are set up in the theme.plist -->
+		<!-- User defined styles -->
+		<!--[if IE 6]><link rel="stylesheet" type="text/css" media="screen" href="../../rw_common/themes/businessfunkeffects/ie6.css"  /><![endif]-->
+
+		<script type="text/javascript" src="e6fb7327cb615688f90fc07656a3880d-28_files/javascript.js"></script>
+		<script type="text/javascript" src="e6fb7327cb615688f90fc07656a3880d-28_files/mootools.js"></script>
+		<!-- User defined javascript -->
+		<link rel="alternate" type="application/rss+xml" title="Enclave Forensics RSS Feed" href="http://www.enclaveforensics.com/Blog/files/blog.xml">
+		
+	</head>
+<body>
+<div id="container"><!-- Start container -->
+
+	<div id="pageHeader"><!-- Start page header -->
+		<h1>Enclave Forensics</h1>
+		<h2>Fast &amp; Professional Incident Response Services</h2>
+		<img src="e6fb7327cb615688f90fc07656a3880d-28_files/Enclave%2520Forensics%2520Small.JPG" alt="Site logo" width="144" height="47">
+	</div><!-- End page header -->
+	
+	<div id="contentContainer"><!-- Start main content wrapper -->
+		<div id="content"><!-- Start content -->
+				
+	
+	<div class="blog-archive-entries-wrapper">
+		<div id="unique-entry-id-28" class="blog-entry"><h1 class="blog-entry-title">Metasploit Exploit Creation, Step By Step</h1><div class="blog-entry-date">Wednesday January 06, 2010 Filed in: <span class="blog-entry-category"><a href="http://enclaveforensics.com/Blog/files/category-security.html">Security</a></span><span class="blog-entry-category">| <a href="http://enclaveforensics.com/Blog/files/category-buffer-overflow.html">buffer overflow</a></span><span class="blog-entry-category">| <a href="http://enclaveforensics.com/Blog/files/category-exploits.html">exploits</a></span><span class="blog-entry-category">| <a href="http://enclaveforensics.com/Blog/files/category-vulnerability.html">Vulnerability</a></span><span class="blog-entry-category">| <a href="http://enclaveforensics.com/Blog/files/category-metasploit.html">Metasploit</a></span><span class="blog-entry-category">| <a href="http://enclaveforensics.com/Blog/files/category-tutorial.html">Tutorial</a></span></div><div class="blog-entry-summary"><em>Struggling
+ to understand the ins and outs of an exploitation tutorial?  Looking 
+for an easy to follow video demonstration?  Trying to figure out how to 
+turn an exploit into a Metasploit exploit module?  Look no further!<br><br></em></div><div class="blog-entry-body">We were recently engaged by the <a href="http://www.sans.org/info/35319" rel="self">SANS Institute</a> to write a Secure Coding in C &amp; C++ course to assist programmers in meeting the <a href="http://www.sans-ssi.org/certification/" rel="self">requirements for the Secure Coding Certification</a>.
+  Along the way, we created some content to give developers an overview 
+of how vulnerabilities are exploited to illustrate how serious the 
+problems are.<br><br>Since the exploit demonstration was already written, we decided to turn it into a <a href="http://www.youtube.com/watch?v=rGlvgeeU0vQ" rel="self">teaser tutorial</a> that goes one step further.  Not only does the tutorial explain <a href="http://en.wikipedia.org/wiki/Buffer_overflow" rel="self">how overflows happen</a> and <a href="http://en.wikipedia.org/wiki/Fuzzing" rel="self">how to find flaws</a>, the tutorial then goes on to cover <a href="http://www.milw0rm.com/shellcode/" rel="self">basic shellcode creation</a>, proof of concept exploit testing and, last but not least, converting the exploit into a <a href="http://www.metasploit.com/" rel="self">Metasploit Exploit Module</a>!<br><br>Since the <a href="http://www.youtube.com/watch?v=rGlvgeeU0vQ" rel="self">video tutorial</a>
+ was posted we’ve had several requests for the source code for the 
+vulnerable service that’s discussed.  We’ve included that code below:<br><br><span style="font:12px Courier, mono; ">#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;unistd.h&gt;<br>#include &lt;errno.h&gt;<br>#include &lt;string.h&gt;<br>#include &lt;sys/types.h&gt;<br>#include &lt;sys/socket.h&gt;<br>#include &lt;netinet/in.h&gt;<br>#include &lt;netdb.h&gt;<br>#include &lt;arpa/inet.h&gt;<br>#include &lt;sys/wait.h&gt;<br>#include &lt;signal.h&gt;<br><br>#define PORT "7777"  // the port users will be connecting to<br><br>#define BACKLOG 10	 // how many pending connections queue will hold<br><br>void vulnerable(char *net_buffer)<br>{<br>	char local_buffer[120];<br>	strcpy(local_buffer, net_buffer);<br>	return;<br>}<br><br>void sigchld_handler(int s)<br>{<br>	while(waitpid(-1, NULL, WNOHANG) &gt; 0);<br>}<br><br>// get sockaddr, IPv4 or IPv6:<br>void *get_in_addr(struct sockaddr *sa)<br>{<br>	if (sa-&gt;sa_family == AF_INET) {<br>		return &amp;(((struct sockaddr_in*)sa)-&gt;sin_addr);<br>	}<br><br>	return &amp;(((struct sockaddr_in6*)sa)-&gt;sin6_addr);<br>}<br><br>int main(void)<br>{<br>	int sockfd, new_fd;  // listen on sock_fd, new connection on new_fd<br>	struct addrinfo hints, *servinfo, *p;<br>	struct sockaddr_storage their_addr; // connector's address information<br>	socklen_t sin_size;<br>	struct sigaction sa;<br>	int yes=1;<br>	char in_buffer[20], out_buffer[20], net_buffer[2048];<br>	char s[INET6_ADDRSTRLEN];<br>	int rv;<br><br>	memset(&amp;hints, 0, sizeof hints);<br>	hints.ai_family = AF_UNSPEC;<br>	hints.ai_socktype = SOCK_STREAM;<br>	hints.ai_flags = AI_PASSIVE; // use my IP<br><br>	if ((rv = getaddrinfo(NULL, PORT, &amp;hints, &amp;servinfo)) != 0) {<br>		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));<br>		return 1;<br>	}<br><br>	// loop through all the results and bind to the first we can<br>	for(p = servinfo; p != NULL; p = p-&gt;ai_next) {<br>		if ((sockfd = socket(p-&gt;ai_family, p-&gt;ai_socktype,<br>				p-&gt;ai_protocol)) == -1) {<br>			perror("server: socket");<br>			continue;<br>		}<br><br>		if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &amp;yes,<br>				sizeof(int)) == -1) {<br>			perror("setsockopt");<br>			exit(1);<br>		}<br><br>		if (bind(sockfd, p-&gt;ai_addr, p-&gt;ai_addrlen) == -1) {<br>			close(sockfd);<br>			perror("server: bind");<br>			continue;<br>		}<br><br>		break;<br>	}<br><br>	if (p == NULL)  {<br>		fprintf(stderr, "server: failed to bind\n");<br>		return 2;<br>	}<br><br>	freeaddrinfo(servinfo); // all done with this structure<br><br>	if (listen(sockfd, BACKLOG) == -1) {<br>		perror("listen");<br>		exit(1);<br>	}<br><br>	sa.sa_handler = sigchld_handler; // reap all dead processes<br>	sigemptyset(&amp;sa.sa_mask);<br>	sa.sa_flags = SA_RESTART;<br>	if (sigaction(SIGCHLD, &amp;sa, NULL) == -1) {<br>		perror("sigaction");<br>		exit(1);<br>	}<br><br>	printf("server: waiting for connections...\n");<br><br>	while(1) {  // main accept() loop<br>		sin_size = sizeof their_addr;<br>		new_fd = accept(sockfd, (struct sockaddr *)&amp;their_addr, &amp;sin_size);<br>		if (new_fd == -1) {<br>			perror("accept");<br>			continue;<br>		}<br><br>		inet_ntop(their_addr.ss_family,<br>			get_in_addr((struct sockaddr *)&amp;their_addr),<br>			s, sizeof s);<br>		printf("server: got connection from %s\n", s);<br><br>		if (!fork()) { // this is the child process<br>			close(sockfd); // child doesn't need the listener<br>			memset(net_buffer, 0, 1024);<br>			strcpy(out_buffer, "HELO\nCOMMAND:");<br>			if (send(new_fd, out_buffer, strlen(out_buffer), 0) == -1)<br>				perror("send");<br>			if (recv(new_fd, net_buffer, 1024, 0))<br>			{<br>				vulnerable(net_buffer);<br>				strcpy(out_buffer, "RECV: ");<br>				strcat(out_buffer, net_buffer);<br>				send(new_fd, out_buffer, strlen(out_buffer), 0);<br>			}<br>			close(new_fd);<br>			exit(0);<br>		}<br>		close(new_fd);  // parent doesn't need this<br>	}<br><br>	return 0;<br>}<br><br></span><br><br><span style="font:14px GillSans-Italic; color:#262626;"><em>For
+ a comprehensive course on how to identify critical controls, validate 
+that the correct controls are in place and validate processes, consider 
+the SANS 6 day course, “</em></span><span style="font:14px GillSans-Italic; color:#0011FF;"><em><u><a href="http://www.sans.org/info/35409">Advanced System &amp; Network Auditing</a></u></em></span><span style="font:14px GillSans-Italic; color:#262626;"><em>“. &nbsp;</em></span><span style="font:14px GillSans-Italic; color:#0011FF;"><em><u><a href="http://www.enclaveforensics.com/staff/Hoelzer.html">David Hoelzer</a></u></em></span><span style="font:14px GillSans-Italic; color:#262626;"><em> is the&nbsp;</em></span><span style="font:14px GillSans-Italic; color:#0011FF;"><em><u><a href="http://audit.sans.org/">SANS IT Audit</a></u></em></span><span style="font:14px GillSans-Italic; color:#262626;"><em> Curriculum Lead and the author of several SANS IT Audit related courses.</em></span><p class="blog-entry-tags">Tags: <a href="http://enclaveforensics.com/Blog/files/tag-metasploit.html" rel="tag">Metasploit</a>, <a href="http://enclaveforensics.com/Blog/files/tag-exploits.html" rel="tag">Exploits</a>, <a href="http://enclaveforensics.com/Blog/files/tag-exploit.html" rel="tag">Exploit</a>, <a href="http://enclaveforensics.com/Blog/files/tag-vulnerability.html" rel="tag">vulnerability</a>, <a href="http://enclaveforensics.com/Blog/files/tag-buffer-overflow.html" rel="tag">buffer overflow</a>, <a href="http://enclaveforensics.com/Blog/files/tag-buffer-overflows.html" rel="tag">buffer overflows</a>, <a href="http://enclaveforensics.com/Blog/files/tag-tutorial.html" rel="tag">Tutorial</a></p></div></div>
+	</div>
+	
+	 
+
+		</div><!-- End content -->
+	</div><!-- End main content wrapper -->
+	
+	<div id="sidebarContainer"><!-- Start Sidebar wrapper -->
+		<div id="navcontainer"><!-- Start Navigation -->	
+			<ul><li><a style="visibility: visible; opacity: 0.9999;" href="http://enclaveforensics.com/" rel="self">Enclave Forensics</a></li><li><a style="visibility: visible; opacity: 0.9999;" href="http://enclaveforensics.com/Services/" rel="self">Services</a></li><li><a style="visibility: visible; opacity: 0.9999;" href="http://enclaveforensics.com/Blog/" rel="self" id="current">Blog</a></li><li><a style="visibility: visible; opacity: 0.9999;" href="http://enclaveforensics.com/Contact/" rel="self">Contact</a></li></ul>
+		</div><!-- End navigation --> 
+		
+		<div id="MenuBottom"></div>
+		
+		<div id="sidebar"><!-- Start sidebar content -->
+			<div id="blog-categories"><a href="http://enclaveforensics.com/Blog/files/category-security.html" class="blog-category-link-enabled">Security (17)</a><br><a href="http://enclaveforensics.com/Blog/files/category-research.html" class="blog-category-link-enabled">Research (7)</a><br><a href="http://enclaveforensics.com/Blog/files/category-news.html" class="blog-category-link-enabled">News (1)</a><br><a href="http://enclaveforensics.com/Blog/files/category-q-0026-a.html" class="blog-category-link-enabled">Q &amp; A (3)</a><br><a href="http://enclaveforensics.com/Blog/files/category-compliance.html" class="blog-category-link-enabled">Compliance (3)</a><br><a href="http://enclaveforensics.com/Blog/files/category-pci.html" class="blog-category-link-enabled">PCI (3)</a><br><a href="http://enclaveforensics.com/Blog/files/category-web-applications.html" class="blog-category-link-enabled">Web Applications (2)</a><br><a href="http://enclaveforensics.com/Blog/files/category-auditing.html" class="blog-category-link-enabled">Auditing (9)</a><br><a href="http://enclaveforensics.com/Blog/files/category-penetration-testing.html" class="blog-category-link-enabled">Penetration Testing (1)</a><br><a href="http://enclaveforensics.com/Blog/files/category-training.html" class="blog-category-link-enabled">Training (2)</a><br><a href="http://enclaveforensics.com/Blog/files/category-videos.html" class="blog-category-link-enabled">Videos (1)</a><br><a href="http://enclaveforensics.com/Blog/files/category-conferences.html" class="blog-category-link-enabled">Conferences (1)</a><br><a href="http://enclaveforensics.com/Blog/files/category-forensics.html" class="blog-category-link-enabled">Forensics (3)</a><br><a href="http://enclaveforensics.com/Blog/files/category-incident-response.html" class="blog-category-link-enabled">Incident Response (1)</a><br><a href="http://enclaveforensics.com/Blog/files/category-iphone.html" class="blog-category-link-enabled">IPhone (1)</a><br><a href="http://enclaveforensics.com/Blog/files/category-programming.html" class="blog-category-link-enabled">Programming (1)</a><br><a href="http://enclaveforensics.com/Blog/files/category-pci002fdss.html" class="blog-category-link-enabled">PCI/DSS (1)</a><br><a href="http://enclaveforensics.com/Blog/files/category-controls.html" class="blog-category-link-enabled">Controls (1)</a><br><a href="http://enclaveforensics.com/Blog/files/category-risk-management.html" class="blog-category-link-enabled">Risk Management (1)</a><br><a href="http://enclaveforensics.com/Blog/files/category-vulnerability-assessment.html" class="blog-category-link-enabled">Vulnerability Assessment (1)</a><br><a href="http://enclaveforensics.com/Blog/files/category-how-to.html" class="blog-category-link-enabled">How To (2)</a><br><a href="http://enclaveforensics.com/Blog/files/category-courses.html" class="blog-category-link-enabled">Courses (1)</a><br><a href="http://enclaveforensics.com/Blog/files/category-exploits.html" class="blog-category-link-enabled">exploits (1)</a><br><a href="http://enclaveforensics.com/Blog/files/category-buffer-overflow.html" class="blog-category-link-enabled">buffer overflow (1)</a><br><a href="http://enclaveforensics.com/Blog/files/category-vulnerability.html" class="blog-category-link-enabled">Vulnerability (1)</a><br><a href="http://enclaveforensics.com/Blog/files/category-metasploit.html" class="blog-category-link-enabled">Metasploit (1)</a><br><a href="http://enclaveforensics.com/Blog/files/category-tutorial.html" class="blog-category-link-enabled">Tutorial (1)</a><br><a href="http://enclaveforensics.com/Blog/files/category-mac.html" class="blog-category-link-enabled">Mac (1)</a><br><a href="http://enclaveforensics.com/Blog/files/category-os-x.html" class="blog-category-link-enabled">OS X (1)</a><br><a href="http://enclaveforensics.com/Blog/files/category-snow-leopard.html" class="blog-category-link-enabled">Snow Leopard (1)</a><br><a href="http://enclaveforensics.com/Blog/files/category-leopard.html" class="blog-category-link-enabled">Leopard (1)</a><br><a href="http://enclaveforensics.com/Blog/files/category-ilife.html" class="blog-category-link-enabled">ILife (1)</a><br><a href="http://enclaveforensics.com/Blog/files/category-hack.html" class="blog-category-link-enabled">Hack (1)</a><br></div><div id="blog-archives"><div class="blog-archive-link-disabled">Feb 2010</div><div class="blog-archive-link-disabled">Jan 2010</div><div class="blog-archive-link-disabled">Dec 2009</div><div class="blog-archive-link-disabled">Nov 2009</div><div class="blog-archive-link-disabled">Oct 2009</div><div class="blog-archive-link-disabled">Sep 2009</div><div class="blog-archive-link-disabled">Aug 2009</div><div class="blog-archive-link-disabled">Jul 2009</div><div class="blog-archive-link-disabled">Jun 2009</div><div class="blog-archive-link-disabled">May 2009</div><div class="blog-archive-link-disabled">Apr 2009</div><div class="blog-archive-link-disabled">Mar 2009</div><div class="blog-archive-link-disabled">Feb 2009</div><div class="blog-archive-link-disabled">Jan 2009</div><a class="blog-archive-link-enabled" href="http://enclaveforensics.com/Blog/files/archive-dec-2008.html">Dec 2008</a><br><a class="blog-archive-link-enabled" href="http://enclaveforensics.com/Blog/files/archive-nov-2008.html">Nov 2008</a><br><div class="blog-archive-link-disabled">Oct 2008</div><a class="blog-archive-link-enabled" href="http://enclaveforensics.com/Blog/files/archive-sep-2008.html">Sep 2008</a><br><div class="blog-archive-link-disabled">Aug 2008</div><a class="blog-archive-link-enabled" href="http://enclaveforensics.com/Blog/files/archive-jul-2008.html">Jul 2008</a><br><a class="blog-archive-link-enabled" href="http://enclaveforensics.com/Blog/files/archive-jun-2008.html">Jun 2008</a><br><a class="blog-archive-link-enabled" href="http://enclaveforensics.com/Blog/files/archive-may-2008.html">May 2008</a><br></div><ul class="blog-tag-cloud"><li><a href="http://enclaveforensics.com/Blog/files/tag-audit.html" class="blog-tag-size-10" rel="tag">Audit</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-buffer-overflow.html" class="blog-tag-size-9" rel="tag">buffer overflow</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-buffer-overflows.html" class="blog-tag-size-9" rel="tag">buffer overflows</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-career.html" class="blog-tag-size-9" rel="tag">Career</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-compliance.html" class="blog-tag-size-10" rel="tag">Compliance</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-computer-forensics.html" class="blog-tag-size-8" rel="tag">Computer Forensics</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-conferences.html" class="blog-tag-size-8" rel="tag">Conferences</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-data-recovery.html" class="blog-tag-size-8" rel="tag">Data Recovery</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-event-logs.html" class="blog-tag-size-8" rel="tag">Event Logs</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-exploit.html" class="blog-tag-size-7" rel="tag">Exploit</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-exploits.html" class="blog-tag-size-7" rel="tag">Exploits</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-forensics.html" class="blog-tag-size-7" rel="tag">Forensics</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-hack.html" class="blog-tag-size-7" rel="tag">Hack</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-how-to.html" class="blog-tag-size-10" rel="tag">How To</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-ilife.html" class="blog-tag-size-6" rel="tag">iLife</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-installation.html" class="blog-tag-size-6" rel="tag">installation</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-investigator.html" class="blog-tag-size-6" rel="tag">investigator</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-iphone.html" class="blog-tag-size-6" rel="tag">iPhone</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-it-audit.html" class="blog-tag-size-5" rel="tag">IT Audit</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-leopard.html" class="blog-tag-size-5" rel="tag">Leopard</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-log-aggregation.html" class="blog-tag-size-5" rel="tag">Log Aggregation</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-log-management.html" class="blog-tag-size-5" rel="tag">Log Management</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-mac.html" class="blog-tag-size-4" rel="tag">Mac</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-metasploit.html" class="blog-tag-size-4" rel="tag">Metasploit</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-os-x.html" class="blog-tag-size-4" rel="tag">OS X</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-pci.html" class="blog-tag-size-10" rel="tag">PCI</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-policy.html" class="blog-tag-size-4" rel="tag">Policy</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-presenting.html" class="blog-tag-size-3" rel="tag">Presenting</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-professional-communication.html" class="blog-tag-size-3" rel="tag">Professional Communication</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-programming.html" class="blog-tag-size-3" rel="tag">Programming</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-public-speaking.html" class="blog-tag-size-3" rel="tag">Public Speaking</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-roi.html" class="blog-tag-size-2" rel="tag">ROI</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-secure-coding.html" class="blog-tag-size-2" rel="tag">Secure Coding</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-security.html" class="blog-tag-size-9" rel="tag">Security</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-snow-leopard.html" class="blog-tag-size-2" rel="tag">Snow Leopard</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-syslog.html" class="blog-tag-size-2" rel="tag">Syslog</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-technical-communication.html" class="blog-tag-size-1" rel="tag">Technical Communication</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-tutorial.html" class="blog-tag-size-1" rel="tag">Tutorial</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-vulnerability.html" class="blog-tag-size-1" rel="tag">vulnerability</a></li>
+<li><a href="http://enclaveforensics.com/Blog/files/tag-windows-logging.html" class="blog-tag-size-1" rel="tag">Windows Logging</a></li>
+</ul>
+<div id="blog-rss-feeds"><a class="blog-rss-link" href="http://enclaveforensics.com/Blog/files/blog.xml" rel="alternate" type="application/rss+xml">RSS Feed</a><br></div> <!-- sidebar content such as the blog archive links -->
+			<h1 class="sideHeader"></h1><!-- Sidebar header -->
+			<center>
+<script type="text/javascript" src="e6fb7327cb615688f90fc07656a3880d-28_files/show_ads.js">
+</script><script src="e6fb7327cb615688f90fc07656a3880d-28_files/test_domain.js"></script><script>google_protectAndRun("ads_core.google_render_ad", google_handleError, google_render_ad);</script><iframe name="google_ads_frame" src="e6fb7327cb615688f90fc07656a3880d-28_files/ads.htm" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" width="undefined" frameborder="0" height="undefined"></iframe><script type="text/javascript"><!--
+google_ad_client = "pub-6609029629747741";
+/* 120x240, created 3/30/09 */
+google_ad_slot = "2833987453";
+google_ad_width = 120;
+google_ad_height = 240;
+//-->
+</script>
+<script type="text/javascript" src="e6fb7327cb615688f90fc07656a3880d-28_files/show_ads.js">
+</script><script src="e6fb7327cb615688f90fc07656a3880d-28_files/expansion_embed.js"></script><script>google_protectAndRun("ads_core.google_render_ad", google_handleError, google_render_ad);</script><ins style="display:inline-table;border:none;height:240px;margin:0;padding:0;position:relative;visibility:visible;width:120px"><ins id="google_ads_frame2_anchor" style="display:block;border:none;height:240px;margin:0;padding:0;position:relative;visibility:visible;width:120px"><iframe allowtransparency="true" hspace="0" id="google_ads_frame2" marginheight="0" marginwidth="0" name="google_ads_frame" src="e6fb7327cb615688f90fc07656a3880d-28_files/ads_002.htm" style="left: 0pt; position: absolute; top: 0pt;" vspace="0" scrolling="no" width="120" frameborder="0" height="240"></iframe></ins></ins></center><!-- sidebar content you enter in the page inspector -->
+		</div><!-- End sidebar content -->
+	</div><!-- End sidebar wrapper -->
+	
+	<div class="clearer"></div>
+</div><!-- End container -->
+<div id="footer"><!-- Start Footer -->
+	<div id="breadcrumbcontainer"><!-- Start the breadcrumb wrapper -->
+		
+	</div><!-- End breadcrumb -->
+	<p>David Hoelzer is the Director of Research for Enclave Forensics and a Senior Fellow with The SANS Technology Institute</p>
+</div><!-- End Footer -->
+<!-- Start Google Analytics -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script src="e6fb7327cb615688f90fc07656a3880d-28_files/ga.js" type="text/javascript"></script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-6727366-1");
+pageTracker._trackPageview();
+} catch(err) {}</script><!-- End Google Analytics -->
+
+
+<div style="position: absolute; visibility: hidden; opacity: 0;" class="tooltip"><h4></h4><p></p></div></body></html>

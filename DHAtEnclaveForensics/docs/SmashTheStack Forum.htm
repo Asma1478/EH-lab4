@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0045)http://smashthestack.org/viewtopic.php?id=388 -->
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr"><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+
+<title>SmashTheStack Forum</title>
+<link rel="stylesheet" type="text/css" href="./SmashTheStack Forum_files/Oxygen.css">
+<title>SmashTheStack Forum</title>
+<link rel="stylesheet" href="./SmashTheStack Forum_files/style.css" type="text/css" media="screen,projection">
+<link rel="shortcut icon" href="http://smashthestack.org/icon.ico" type="image/x-icon">
+<link rel="icon" href="http://smashthestack.org/icon.ico" type="image/x-icon">
+
+</head>
+
+<body>
+<div id="container">
+
+<div id="header">
+<img src="./SmashTheStack Forum_files/logo.gif" alt="header">
+</div>
+
+<div id="navigation">
+    <ul>
+        <li><a href="http://smashthestack.org/index.php" title="main">main</a></li>
+        <li><a href="http://smashthestack.org/wargames.php" title="wargames">wargames</a></li>
+        <li><a class="selected" title="forum">forum</a></li>
+        <li><a href="http://smashthestack.org/irc.php" title="IRC">IRC</a></li>
+        <li><a href="http://smashthestack.org/faq.php" title="FAQ">FAQ</a></li>
+		<li style="color:#80a630;"><a href="http://smashthestack.org/register.php">register</a></li>
+        <li><a href="http://smashthestack.org/login.php">login</a></li>
+	</ul>
+</div>
+
+<br>
+<div style="padding:0 0 0 20px" class="content2">
+<h2>Welcome to SmashTheStack Forum!</h2>
+</div>
+<div id="punwrap">
+<div id="punviewtopic" class="pun">
+
+<div id="brdheader" class="block">
+	<div class="box">
+		<div id="brdtitle" class="inbox">
+			<h1><span>Smash The Stack</span></h1>
+			<p><span>wargames</span></p>
+		</div>
+		<div id="brdmenu" class="inbox">
+			<ul>
+				<li id="navindex"><a href="http://smashthestack.org/main.php">Index</a></li>
+				<li id="navuserlist"><a href="http://smashthestack.org/userlist.php">User list</a></li>
+				<li id="navrules"><a href="http://smashthestack.org/misc.php?action=rules">Rules</a></li>
+				<li id="navsearch"><a href="http://smashthestack.org/search.php">Search</a></li>
+			</ul>
+		</div>
+		<div id="brdwelcome" class="inbox">
+			<p>You are not logged in.</p>
+		</div>
+	</div>
+</div>
+
+<div id="announce" class="block">
+	<h2><span>Announcement</span></h2>
+	<div class="box">
+		<div class="inbox">
+			<div><a href="http://smashthestack.org/viewtopic.php?id=448">Logic: A New Wargame</a></div>
+		</div>
+	</div>
+</div>
+
+<div class="linkst">
+	<div class="inbox">
+		<p class="pagelink conl">Pages: <strong>1</strong></p>
+		<p class="postlink conr">&nbsp;</p>
+		<ul><li><a href="http://smashthestack.org/main.php">Index</a></li><li>&nbsp;»&nbsp;<a href="http://smashthestack.org/viewforum.php?id=4">Tutorials</a></li><li>&nbsp;»&nbsp;Stack Smashing @ Home</li></ul>
+		<div class="clearer"></div>
+	</div>
+</div>
+
+<div id="p999" class="blockpost rowodd firstpost">
+	<h2><span><span class="conr">#1&nbsp;</span><a href="http://smashthestack.org/viewtopic.php?pid=999#p999">2009-01-17 18:31:30</a></span></h2>
+	<div class="box">
+		<div class="inbox">
+			<div class="postleft">
+				<dl>
+					<dt><strong><a href="http://smashthestack.org/profile.php?id=17">s0ttle</a></strong></dt>
+					<dd class="usertitle"><strong>Staff</strong></dd>
+					<dd class="postavatar"><img src="./SmashTheStack Forum_files/17.png" width="79" height="150" alt=""></dd>
+					<dd>From: .de</dd>
+					<dd>Registered: 2006-10-10</dd>
+					<dd>Posts: 176</dd>
+					<dd class="usercontacts"><a href="http://www.s0ttle.net/">Website</a></dd>
+				</dl>
+			</div>
+			<div class="postright">
+				<h3>Stack Smashing @ Home</h3>
+				<div class="postmsg">
+					<p>Ok so you want to practice exploiting at home on your own box, but things just don't seem to be working.<br>Here are a few things that you may want to consider before you give up.<br><br><br><span style="color: green"><strong>::: GCC PROTECTIONS :::</strong></span><br><br><strong><em> o Stack Smashting Protection (SSP) / ProPolice</em></strong><br>&nbsp; &nbsp;-fstack-protector - enables stack protection for functions using character arrays<br>&nbsp; &nbsp;-fno-stack-protector - disables stack protection<br><br>by default it is included in gcc &gt;=4.1 but <span style="color: red">not enabled</span>, however it is distro specific<br><br>to check:<br><br></p><div class="codebox"><div class="incqbox"><h4>Code:</h4><div class="scrollbox" style="height: 7.5em"><pre>mike@quazi(/tmp):$ objdump -d sts | grep stack_chk_fail
+080482e8 &lt;__stack_chk_fail@plt&gt;:
+ 80483f8:       e8 eb fe ff ff          call   80482e8 &lt;__stack_chk_fail@plt&gt;</pre></div></div></div><p>What it does:<br><br>1. Reorders local variables so that buffers are placed after pointers<br>2. Copies pointers in function arguments to an area before local buffers<br>3. omits instrumentation code from functions to reduce overhead<br>4. adds a call to __stack_chk_fail() in the epilog<br><br><strong><em> o GNU_STACK ELF markings</em></strong><br>&nbsp; &nbsp; -z execstack - enable executable stack<br>&nbsp; &nbsp; -z noexecstack - disable executable stack (default)<br><br>gcc adds the stack marking above when you compile your source code. The default behavior is that your executable ends up with a non-executable stack unless there was some indication that an executable stack was necessary (trampolines).<br><br></p><div class="codebox"><div class="incqbox"><h4>Code:</h4><div class="scrollbox" style="height: 10.5em"><pre>mike@quazi(/tmp):$ gcc -o sts sts.c &amp;&amp; readelf -l sts | grep -i stack
+  GNU_STACK      0x000000 0x00000000 0x00000000 0x00000 0x00000 RW  0x4
+
+mike@quazi(/tmp):$ gcc -z execstack -o sts sts.c &amp;&amp; readelf -l sts | grep -i stack
+  GNU_STACK      0x000000 0x00000000 0x00000000 0x00000 0x00000 RWE 0x4</pre></div></div></div><p><em>** There is also a execstack(8) tool included in the prelink package&nbsp; that can dynamically set or unset the executable stack. **</em><br><br></p><div class="codebox"><div class="incqbox"><h4>Code:</h4><div class="scrollbox" style="height: 15em"><pre>mike@quazi(/tmp):$ readelf -l sts | grep -i stack
+  GNU_STACK      0x000000 0x00000000 0x00000000 0x00000 0x00000 RWE 0x4
+
+mike@quazi(/tmp):$ execstack -c sts &amp;&amp; readelf -l sts | grep -i stack
+  GNU_STACK      0x000000 0x00000000 0x00000000 0x00000 0x00000 RW  0x4
+
+mike@quazi(/tmp):$ execstack -s sts &amp;&amp; readelf -l sts | grep -i stack
+  GNU_STACK      0x000000 0x00000000 0x00000000 0x00000 0x00000 RWE 0x4</pre></div></div></div><p><em>*** Note: if the GNU_STACK marking is missing then the stack is executable ***</em><br><br><strong><em> o Buffer &amp; Format String Vulnerability Checks /&nbsp; -D_FORTIFY_SOURCE</em></strong><br><br>Fortify source protection should be disabled by default, but if you have a distro that does something different you can disable it with:<br><br></p><div class="codebox"><div class="incqbox"><h4>Code:</h4><div class="scrollbox" style="height: 6em"><pre> 
+mike@quazi(/tmp):$ gcc -O1 -D_FORTIFY_SOURCE=0 -o sts sts.c</pre></div></div></div><p>If a binary is compiled with -D_FORTIFY_SOURCE=n <br><em>&nbsp; n = 2 / format srings (%n) and buffer checks </em><br><em>&nbsp; n = 1 / buffer overflow checks only</em><br></p><div class="codebox"><div class="incqbox"><h4>Code:</h4><div class="scrollbox" style="height: 35em"><pre>mike@quazi(/tmp):$ gcc -O1 -D_FORTIFY_SOURCE=2 -o sts sts.c
+sts.c: In function 'main':
+sts.c:12: warning: call to __builtin___strcpy_chk will always overflow destination buffer
+mike@quazi(/tmp):$ ./sts
+Stack Smashing @ Home
+*** buffer overflow detected ***: ./sts terminated
+======= Backtrace: =========
+/lib/libc.so.6(__chk_fail+0x44)[0xb7f56944]
+/lib/libc.so.6(__strcpy_chk+0x3d)[0xb7f55e3d]
+./sts[0x80483e2]
+/lib/libc.so.6(__libc_start_main+0xd8)[0xb7e87df8]
+./sts[0x8048331]
+======= Memory map: ========
+08048000-08049000 r-xp 00000000 03:01 6045744    /tmp/sts
+08049000-0804a000 rw-p 00000000 03:01 6045744    /tmp/sts
+0804a000-0806b000 rw-p 0804a000 00:00 0          [heap]
+b7e71000-b7e72000 rw-p b7e71000 00:00 0
+b7e72000-b7fae000 r-xp 00000000 03:01 2916420    /lib/libc-2.5.so
+b7fae000-b7faf000 r--p 0013c000 03:01 2916420    /lib/libc-2.5.so
+b7faf000-b7fb1000 rw-p 0013d000 03:01 2916420    /lib/libc-2.5.so
+b7fb1000-b7fb4000 rw-p b7fb1000 00:00 0
+b7fc4000-b7fce000 r-xp 00000000 03:01 4784221    /usr/lib/libgcc_s.so.1
+b7fce000-b7fcf000 rw-p 00009000 03:01 4784221    /usr/lib/libgcc_s.so.1
+b7fcf000-b7fd1000 rw-p b7fcf000 00:00 0
+b7fd1000-b7fec000 r-xp 00000000 03:01 2916462    /lib/ld-2.5.so
+b7fec000-b7fee000 rw-p 0001b000 03:01 2916462    /lib/ld-2.5.so
+bfb91000-bfba6000 rw-p bfb91000 00:00 0          [stack]
+ffffe000-fffff000 r-xp 00000000 00:00 0          [vdso]
+Aborted
+mike@quazi(/tmp):$ objdump -d sts | grep _chk
+080482e4 &lt;__strcpy_chk@plt&gt;:
+ 80483dd:       e8 02 ff ff ff          call   80482e4 &lt;__strcpy_chk@plt&gt;</pre></div></div></div><p><span style="color: green"><strong>::: KERNEL LEVEL PROTECTIONS :::</strong></span><br><br><em><strong>o Address Space Layout Randomization (ASLR)</strong></em><br><br>ASLR is in vanilla linux kernels &gt;= 2.6 <br><br>to disable it:<br></p><div class="codebox"><div class="incqbox"><h4>Code:</h4><div class="scrollbox" style="height: 4.5em"><pre>root@quazi(/tmp):# echo 0 &gt; /proc/sys/kernel/randomize_va_space</pre></div></div></div><p>or<br></p><div class="codebox"><div class="incqbox"><h4>Code:</h4><div class="scrollbox" style="height: 4.5em"><pre>root@quazi(/tmp):# /sbin/sysctl -w kernel.randomize_va_space=0</pre></div></div></div><p>and if you only want ASLR disabled for each invokation use setarch(8) (may not be installed in your distro):<br></p><div class="codebox"><div class="incqbox"><h4>Code:</h4><div class="scrollbox" style="height: 4.5em"><pre>mike@quazi(/tmp):$ /usr/sbin/setarch i686 -R ./sts</pre></div></div></div><p><em><strong>o Exec-Shield</strong></em><br><br>In order to disable exec-shield:<br><br></p><div class="codebox"><div class="incqbox"><h4>Code:</h4><div class="scrollbox" style="height: 6em"><pre>root@quazi(/tmp):# echo 0 &gt; /proc/sys/kernel/exec-shield
+root@quazi(/tmp):# echo 0 &gt; /proc/sys/kernel/exec-shield-randomize</pre></div></div></div><p>or <br></p><div class="codebox"><div class="incqbox"><h4>Code:</h4><div class="scrollbox" style="height: 6em"><pre>root@quazi(/tmp):# /sbin/sysctl -w kernel.exec-shield=0
+root@quazi(/tmp):# /sbin/sysctl -w kernel.exec-shield-randomize=0</pre></div></div></div><p><em>*** Note: if you want to maintain the sysctl(8) changes after a reboot add them to sysctl.conf ***</em><br><br>SOURCE: sts.c<br></p><div class="codebox"><div class="incqbox"><h4>Code:</h4><div class="scrollbox" style="height: 27em"><pre>mike@quazi(/tmp):$ cat sts.c
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+int
+main(void)
+{
+  int a = 1;
+  char buf[4];
+  char* ptr;
+
+  printf("Stack Smashing @ Home\n");
+  strcpy(buf, "rehsams");
+
+  return(0);
+}</pre></div></div></div><p>That should get you going. If I missed something feel free to point it out <img src="./SmashTheStack Forum_files/smile.png" width="15" height="15" alt="smile"> a little too much heffevisen in my system right now.<br><br><strong>References:</strong><br><br>[+] <a href="http://www.trl.ibm.com/projects/security/ssp/main.html">http://www.trl.ibm.com/projects/security/ssp/main.html</a><br>[+] <a href="http://www.linux.org.uk/~ajh/gcc/gccsummit-2003-proceedings.pdf">http://www.linux.org.uk/~ajh/gcc/gccsum … edings.pdf</a><br>[+] <a href="http://gcc.gnu.org/gcc-4.1/changes.html">http://gcc.gnu.org/gcc-4.1/changes.html</a><br>[+] <a href="http://www.linux.com/feature/29186">http://www.linux.com/feature/29186</a><br>[+] <a href="http://www.redhat.com/magazine/009jul05/features/execshield/#checks">http://www.redhat.com/magazine/009jul05 … ld/#checks</a></p>
+				</div>
+				<div class="postsignature"><hr>slackwaRe evokes feaR</div>
+			</div>
+			<div class="clearer"></div>
+			<div class="postfootleft"><p><strong>Online</strong></p></div>
+			<div class="postfootright"><div>&nbsp;</div></div>
+		</div>
+	</div>
+</div>
+
+<div id="p1000" class="blockpost roweven">
+	<h2><span><span class="conr">#2&nbsp;</span><a href="http://smashthestack.org/viewtopic.php?pid=1000#p1000">2009-01-18 09:50:40</a></span></h2>
+	<div class="box">
+		<div class="inbox">
+			<div class="postleft">
+				<dl>
+					<dt><strong><a href="http://smashthestack.org/profile.php?id=12">nnp</a></strong></dt>
+					<dd class="usertitle"><strong>Staff</strong></dd>
+					<dd class="postavatar"></dd>
+					<dd>Registered: 2006-10-07</dd>
+					<dd>Posts: 67</dd>
+				</dl>
+			</div>
+			<div class="postright">
+				<h3> Re: Stack Smashing @ Home</h3>
+				<div class="postmsg">
+					<p>Excellent, this was needed</p>
+				</div>
+			</div>
+			<div class="clearer"></div>
+			<div class="postfootleft"><p>Offline</p></div>
+			<div class="postfootright"><div>&nbsp;</div></div>
+		</div>
+	</div>
+</div>
+
+<div class="postlinksb">
+	<div class="inbox">
+		<p class="postlink conr">&nbsp;</p>
+		<p class="pagelink conl">Pages: <strong>1</strong></p>
+		<ul><li><a href="http://smashthestack.org/main.php">Index</a></li><li>&nbsp;»&nbsp;<a href="http://smashthestack.org/viewforum.php?id=4">Tutorials</a></li><li>&nbsp;»&nbsp;Stack Smashing @ Home</li></ul>
+		<div class="clearer"></div>
+	</div>
+</div>
+
+<div id="brdfooter" class="block">
+	<h2><span>Board footer</span></h2>
+	<div class="box">
+		<div class="inbox">
+
+			<div class="conl">
+				<form id="qjump" method="get" action="http://smashthestack.org/viewforum.php">
+					<div><label>Jump to
+					<br><select name="id" onchange="window.location=(&#39;viewforum.php?id=&#39;+this.options[this.selectedIndex].value)">
+						<optgroup label="MAIN">
+							<option value="2">Annoucements</option>
+							<option value="39">Introductions</option>
+							<option value="3">Suggestions</option>
+							<option value="4" selected="selected">Tutorials</option>
+						</optgroup>
+						<optgroup label="WARGAMES">
+							<option value="44">AMATERIA</option>
+							<option value="36">APFEL</option>
+							<option value="11">BLACKBOX</option>
+							<option value="10">BLOWFISH</option>
+							<option value="37">IO</option>
+							<option value="42">LOGIC</option>
+							<option value="5">TUX</option>
+							<option value="9">CTF  (Team Based Wargame)</option>
+						</optgroup>
+						<optgroup label="OPERATING SYSTEMS / PROGRAMMING">
+							<option value="14">Coder Central</option>
+							<option value="27">OS Central</option>
+						</optgroup>
+						<optgroup label="GENERAL">
+							<option value="19">Lounge</option>
+							<option value="21">Hacking/Networking</option>
+							<option value="31">Logs</option>
+							<option value="25">Geek Pictures</option>
+							<option value="18">Help</option>
+					</optgroup>
+					</select>
+					<input type="submit" value=" Go " accesskey="g">
+					</label></div>
+				</form>
+			</div>
+            <div style="margin:10px 10px;float:right;background-color:#FFF;width:50px;height:50px;"><img height="50" width="50" src="./SmashTheStack Forum_files/hacker_emblem.png"></div>
+            <p class="conr">Last updated: 2011-7-21</p>
+		<!--<p class="conr">Powered by <a href="http://punbb.informer.com/">PunBB</a><br />&copy; Copyright 2002&#8211;2008 PunBB</p>-->
+			<div class="clearer"></div>
+		</div>
+	</div>
+</div>
+</div>
+</div>
+
+<div id="footer">
+        <table cellspacing="0" cellpadding="0" border="0">
+        <tbody><tr>
+        <td width="1000px" align="center">©2011 <a href="http://smashthestack.org/">smashthestack.org</a>&nbsp;·&nbsp;<a style="color:#80a630" href="http://smashthestack.org/contact.php" title="contact us">contact</a>&nbsp;·&nbsp;<a style="color:#80a630" href="http://smashthestack.org/terms.php" title="terms">disclaimer</a></td>
+        </tr>
+        </tbody></table>
+</div>
+
+
+</div>
+
+
+
+
+</body></html>
